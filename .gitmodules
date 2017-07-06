@@ -1,0 +1,6 @@
+[submodule "search-web"]
+	path = search-web
+	url = https://github.com/ComputePractice2017/search-web.git
+[submodule "search-server"]
+	path = search-server
+	url = https://github.com/ComputePractice2017/search-server.git

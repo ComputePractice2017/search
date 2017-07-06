@@ -1,0 +1,14 @@
+FROM golang
+
+RUN go get "github.com/gorilla/mux"
+RUN go get "github.com/gorilla/handlers"
+RUN go get "gopkg.in/gorethink/gorethink.v3"
+
+ADD search-server /go/src/github.com/ComputePractice2017/search-server 
+RUN go install github.com/ComputePractice2017/search-server
+
+ENTRYPOINT /go/bin/search-server
+
+ENV RETHINKDB_HOST db
+
+EXPOSE 8000
