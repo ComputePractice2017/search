@@ -1,5 +1,4 @@
 FROM golang
-//Hellow my   frend
 RUN go get "github.com/gorilla/mux"
 RUN go get "github.com/gorilla/handlers"
 RUN go get "gopkg.in/gorethink/gorethink.v3"
