@@ -1,0 +1,1 @@
+docker build -t search-server -f  Dockerfile.server .
