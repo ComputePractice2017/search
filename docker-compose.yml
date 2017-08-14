@@ -5,7 +5,6 @@ services:
     image: rethinkdb
     ports:
       - "28015"
-      - "8080:8080"
     volumes:
       - db_data:/data
     restart: always
@@ -21,20 +20,31 @@ services:
     environment:
       RETHINKDB_HOST: db
     ports:
-      - "8000:8000"
+      - "8000"
+    restart: always
+    
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "80"
     restart: always
 
   gateway:
     depends_on:
+     - web
      - server
     links:
+     - web
      - server
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.gateway
     ports:
       - "80:80"
-    restart: always  
+    restart: always
 
 volumes:
   db_data: 
