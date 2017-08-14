@@ -9,6 +9,16 @@ services:
       - db_data:/data
     restart: always
 
+services1:
+  db:
+    image: rabbitmq
+    ports:
+      - "80:80"
+    volumes:
+      - db_data:/data
+    restart: always
+
+
   server:
     depends_on:
      - db
@@ -22,9 +32,8 @@ services:
     ports:
       - "8000"
     restart: always
-    
-
-  web:
+        
+   web:
     build:
       context: .
       dockerfile: Dockerfile.web
@@ -41,10 +50,10 @@ services:
      - server
     build:
       context: .
-      dockerfile: Dockerfile.gateway
+      dockerfile: Dockerfile.dev
     ports:
       - "80:80"
-    restart: always
+    restart: always  
 
 volumes:
   db_data: 
