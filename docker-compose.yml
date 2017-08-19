@@ -4,56 +4,83 @@ services:
   db:
     image: rethinkdb
     ports:
-      - "28015"
+      - "8080:8080"
     volumes:
       - db_data:/data
+    networks:
+      - back
     restart: always
-
-services1:
-  db:
-    image: rabbitmq
-    ports:
-      - "80:80"
-    volumes:
-      - db_data:/data
-    restart: always
-
 
   server:
     depends_on:
      - db
     links:
      - db
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.server
     environment:
       RETHINKDB_HOST: db
     ports:
-      - "8000"
+      - "8000:8000"
+    networks:
+      - back
     restart: always
-        
-   web:
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "8081:15672"
+    volumes:
+      - rabbitmq_data:/data
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    networks:
+      - back
+    restart: always
+
+  agent:
+    depends_on:
+     - rabbitmq
+    links:
+     - rabbitmq
     build:
       context: .
-      dockerfile: Dockerfile.web
-    ports:
-      - "80"
+      dockerfile: Dockerfile.agent
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_CHANNEL: main
+    networks:
+      - back
     restart: always
 
   gateway:
     depends_on:
-     - web
      - server
+     - agent
     links:
-     - web
      - server
+     - agent
     build:
       context: .
       dockerfile: Dockerfile.dev
     ports:
       - "80:80"
-    restart: always  
+    networks:
+      - back
+    restart: always
 
 volumes:
-  db_data: 
+  db_data:
+  rabbitmq_data:
+
+networks:
+  back:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.50.10.0/24

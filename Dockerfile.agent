@@ -1,0 +1,20 @@
+FROM golang
+
+ENV RABBITMQ_HOST rabbitmq
+ENV RABBITMQ_DEFAULT_USER guest
+ENV RABBITMQ_DEFAULT_PASS guest
+ENV RABBITMQ_CHANNEL test
+
+RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive apt install git -y && \
+    apt-get -y autoremove && apt-get -y clean && \
+    go get "github.com/gorilla/mux" && \
+    go get "github.com/gorilla/handlers" && \
+    go get "github.com/streadway/amqp"
+
+ADD search-agent /go/src/search-agent
+RUN go install search-agent
+
+ENTRYPOINT /go/bin/search-agent
+
+EXPOSE 8000

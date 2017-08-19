@@ -1,0 +1,22 @@
+send example:
+
+$ http localhost/send/string1
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 0
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 18 Aug 2017 23:46:45 GMT
+Server: nginx/1.13.3
+
+receive example:
+
+$ http localhost/receive
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 7
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 18 Aug 2017 23:47:19 GMT
+Server: nginx/1.13.3
+
+string1
+
